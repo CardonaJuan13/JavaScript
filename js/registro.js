@@ -1,10 +1,10 @@
-const registro = document.getElementById("register-form");
+const register = document.getElementById("register-form");
 
-registro.addEventListener("submit", function(e) {
+register.addEventListener("submit", function(e) {
     e.preventDefault();
 
-    const usuario = document.getElementById("usuario").value;
-    const contraseña = document.getElementById("contraseña").value;
-    localStorage.setItem(usuario, contraseña);
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+    localStorage.setItem(username, password);
     window.location.href = "login.html";
 });
