@@ -1,45 +1,80 @@
-let usuario = {
-    nombre: prompt("Ingresa tu nombre"),
-    edad: NaN
-  };
-  while (isNaN(usuario.edad) || usuario.edad <= 0) {
-    usuario.edad = parseInt(prompt("Ingresa tu edad"));
-  
-    if (isNaN(usuario.edad) || usuario.edad <= 0) {
-      alert("Ingresa una edad válida");
+//carrito//
+let carrito = [];
+
+function agregarAlCarrito(producto) {
+    carrito.push(producto);
+}
+
+function eliminarDelCarrito(producto) {
+    const index = carrito.indexOf(producto);
+    if (index !== -1) {
+        carrito.splice(index, 1);
     }
-  }
-  if (usuario.edad >= 18) {
-    alert("¡Bienvenido/a! Puedes ingresar a los productos.");
-    const productos = [
-      { nombre: "Producto 1", precio: 200 },
-      { nombre: "Producto 2", precio: 450 },
-      { nombre: "Producto 3", precio: 250 }
-    ];
-    function validarProducto(nombreProducto) {
-      return productos.some(producto => producto.nombre === nombreProducto);
+}
+
+function calcularTotal() {
+    let total = 0;
+    for (const producto of carrito) {
+        total += producto.precio;
     }
-  
-    const nombreProductoElegido = prompt("Ingresa el nombre del producto (Producto 1, Producto 2, Producto 3)");
-  
-    if (!validarProducto(nombreProductoElegido)) {
-      alert("Producto no encontrado");
-    } else {
-      const productoElegido = productos.find(producto => producto.nombre === nombreProductoElegido);
-      const precioProducto = productoElegido.precio;
-      const confirmarCompra = confirm(`El precio de ${nombreProductoElegido} es: ${precioProducto}. ¿Quieres confirmar la compra?`);
-      if (confirmarCompra) {
-        alert(`Gracias por tu compra, ${usuario.nombre}. Te redirigiremos a la página index.`);
-        window.location.href = "./index.html";
-      } else {
-        alert(`Has cancelado la compra, ${usuario.nombre}. Te redirigiremos a la página index.`);
-        window.location.href = "./index.html";
-      }
-      
+    return total;
+}
+
+const productos = [
+    { nombre: "Medialunas", precio: 250 },
+    { nombre: "Facturas", precio: 450 },
+    { nombre: "Pan", precio: 200 }
+];
+
+const contenedorProductos = document.querySelector("#productos");
+const contenedorCarrito = document.querySelector("#carrito");
+const botonVaciarCarrito = document.querySelector("#boton-vaciar");
+
+function renderizarProductos() {
+    for (const producto of productos) {
+        const botonAgregar = document.createElement("button");
+        botonAgregar.innerText = "Agregar al carrito";
+        botonAgregar.addEventListener("click", () => {
+            agregarAlCarrito(producto);
+            renderizarCarrito();
+        });
+
+        const divProducto = document.createElement("div");
+        divProducto.classList.add("producto");
+        divProducto.innerHTML = `<h3>${producto.nombre}</h3><p>${producto.precio} pesos</p>`;
+        divProducto.appendChild(botonAgregar);
+
+        contenedorProductos.appendChild(divProducto);
     }
-  } else {
-    alert("Debes ser mayor de 18 años para comprar en este sitio.");
-    alert("No puedes acceder a productos siendo menor, volverás al inicio.");
-    window.location.href = "./index.html";  
-  }
-  
+}
+function renderizarCarrito() {
+    contenedorCarrito.innerHTML = "";
+
+    for (const producto of carrito) {
+        const botonEliminar = document.createElement("button");
+        botonEliminar.innerText = "Eliminar del carrito";
+        botonEliminar.addEventListener("click", () => {
+            eliminarDelCarrito(producto);
+            renderizarCarrito();
+        });
+
+        const divProducto = document.createElement("div");
+        divProducto.classList.add("producto-carrito");
+        divProducto.innerHTML = `<h3>${producto.nombre}</h3><p>${producto.precio} pesos</p>`;
+        divProducto.appendChild(botonEliminar);
+
+        contenedorCarrito.appendChild(divProducto);
+    }
+
+    const total = calcularTotal();
+    const parrafoTotal = document.createElement("p");
+    parrafoTotal.innerText = `Total: ${total} pesos`;
+
+    contenedorCarrito.appendChild(parrafoTotal);
+}
+
+botonVaciarCarrito.addEventListener("click", () => {
+    carrito = [];
+    renderizarCarrito();
+});
+renderizarProductos();
